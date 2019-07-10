@@ -19,7 +19,7 @@ router.get('/:id', (req, res, next)=>{
   incidenteColl.findOne({"_id": id} , (err, doc)=>{
     if(err){
       console.log(err);
-      return res.status(404).json({"error":"No se Puede Obtener los Incidenttes, Porfa Intente de Nuevo"});
+      return res.status(404).json({"error":"No se Puede Obtener los Incidentes, Porfa Intente de Nuevo"});
     }
     return res.status(200).json(doc);
   });
@@ -29,13 +29,13 @@ router.post('/', (req, res, next)=>{
     {},
     {
       "descripcion":"",
-      "fechaYHora":new Date().getDate(), new Date().getTime(),
+      "fechaYHora": new Date().getTime(),
       "tipo":"",
       "estado":"",
       "UsuarioRegistra":"",
       "UsuarioAsignado":"",
-      "FechaYHoraAsignado":new Date().getDate(), new Date().getTime(),
-      "FechaYHoraCerrado":new Date().getDate(), new Date().getTime()
+      "FechaYHoraAsignado": new Date().getTime(),
+      "FechaYHoraCerrado":new Date().getTime()
     },
     req.body
   );
@@ -51,8 +51,30 @@ router.post('/', (req, res, next)=>{
     return res.status(200).json(rslt.ops[0]);
   });
 });//post
+router.put('/:id', (req, res, next)=>{
+  var query = {"_id":new ObjectID(req.params.id)};
+  var update = {"$inc":{"views":1, "likes":1}};
 
-  });
+  incidenteColl.updateOne(query, update, (err, rslt)=>{
+    if (err) {
+      console.log(err);
+      return res.status(404).json({ "error": "No se pudo modificar el Incidente" });
+    }
+
+    return res.status(200).json(rslt);
+  })
+}); // put
+router.delete('/:id', (req, res, next) => {
+  var query = { "_id": new ObjectID(req.params.id) };
+  incidenteColl.removeOne(query, (err, rslt) => {
+    if (err) {
+      console.log(err);
+      return res.status(404).json({ "error": "No se pudo eliminar el Incidente" });
+    }
+    return res.status(200).json(rslt);
+  })
+});
+
   return router;
 }
 
